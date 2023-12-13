@@ -57,23 +57,23 @@ def verif_mdp(mdp):
             print("Le mot de passe est valide")
             # Afficher le mot de passe hashé
             print("Le mot de passe hashé est : " + h_mdp)
-
-            # print("Le mot de passe a été enregistré dans le fichier mdp.json") 
+            print("Le mot de passe a été enregistré dans le fichier mdp.json") 
 
             return True
         
         # Demander à l'utilisateur de saisir un nouveau mot de passe
-        mdp = input("Veuillez saisir un nouveau mot de passe : ")
+        mdp = input("Veuillez saisir un nouveau mot de passe valide1 : ")
 
 
-def ajouter_mdp(mdp_list, nouveau_mdp_hash):
-    if nouveau_mdp_hash in mdp_list:
-        print("Le mot de passe est déjà présent dans la liste.")
+def ajouter_mdp(mdp_list, nouveau_mdp):
+    # Vérifier si le mot de passe est déjà présent
+    if nouveau_mdp in mdp_list:
+        print("Ce mot de passe existe déjà. Veuillez en choisir un nouveau.")
         return False
-    else:
-        mdp_list.append(nouveau_mdp_hash)
-        print("Le mot de passe a été ajouté à la liste du fichier mdp.json.")
-        return True
+
+    # Ajouter le nouveau mot de passe à la liste
+    mdp_list.append(nouveau_mdp)
+    return True
 
 def afficher_mdp(mdp_list):
     print("Liste des mots de passe enregistrés :")
@@ -87,24 +87,23 @@ try:
 except FileNotFoundError:
     mdp_list = []
 
-# # Demander à l'utilisateur de saisir un mot de passe
-choix_mdp = input("Veuillez saisir votre mot de passe\n avec minimum 8 caracteres\n minimum une majuscule\n minimum une minuscule\n minimum un chiffre et un caractere special :\n")
-
-# Ajouter le nouveau mot de passe à la liste (si valide)
+# Demander à l'utilisateur de saisir un mot de passe
+choix_mdp = input("Veuillez saisir votre mot de passe :\n")
 
 # Appeler la fonction de vérification du mot de passe
 if verif_mdp(choix_mdp):
     # Hacher le mot de passe
     h_mdp = hashlib.sha256(choix_mdp.encode()).hexdigest()
-
-if ajouter_mdp(mdp_list, h_mdp):
+    
+    # Ajouter le nouveau mot de passe à la liste (si valide)
+    if ajouter_mdp(mdp_list, h_mdp):
         # Enregistrer la liste mise à jour dans le fichier mdp.json
         with open("mdp.json", "w") as fichier:
             json.dump(mdp_list, fichier, indent=2) 
             fichier.write("\n")
-    
 
-    
+    # # Afficher la liste des mots de passe
+    # afficher_mdp(mdp_list)
 
 # boucle while pour afficher le menu
 while True:
@@ -115,10 +114,7 @@ while True:
         if choix_menu == "1":
             # Appeler la fonction pour ajouter un mot de passe
             choix_mdp = input("Veuillez saisir votre mot de passe\n avec minimum 8 caracteres\n minimum une majuscule\n minimum une minuscule\n minimum un chiffre et un caractere special : ")
-                      
             verif_mdp(choix_mdp)
-            ajouter_mdp(mdp_list, h_mdp) 
-            
         elif choix_menu == "2":
             #appler la fonction pour afficher les mots de passe
             afficher_mdp(mdp_list)
@@ -131,3 +127,6 @@ while True:
     except KeyboardInterrupt:
         print("\nInterruption utilisateur. Programme arrêté.")
         break
+
+
+verif_mdp(choix_mdp)
