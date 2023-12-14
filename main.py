@@ -1,8 +1,31 @@
-# importation des modules nécessaires au fonctionnement du programme   
+# importe les bibliothèques nécessaires pour le programme 
 import hashlib
 import json
 import random
 import string
+
+# Fonction pour générer un mot de passe aléatoire
+def mdp_aleatoire():
+
+    # liste des caractères autorisés pour le mot de passe aléatoire (lettres majuscules et minuscules, chiffres et caractères spéciaux)
+    liste_charac = string.ascii_letters + string.digits + string.punctuation 
+    mdp=""
+    for index in range(15): # boucle pour générer un mot de passe de 10 caractères
+        mdp += random.choice(liste_charac) # ajouter un caractère aléatoire à la chaîne de caractères mdp à chaque itération de la boucle for
+
+    # hasher le mot de passe
+    h_mdp = hashlib.sha256(mdp.encode()).hexdigest()
+
+    # ajouter le mot de passe à la liste
+    mdp_list.append(h_mdp)
+
+    # enregistrer la liste mise à jour dans le fichier mdp.json 
+    with open("mdp.json", "w") as fichier:
+        json.dump(mdp_list, fichier, indent=2)
+        fichier.write("\n")
+     
+    print("Votre mot de passe aléatoire est : " + mdp)
+    print("Le mot de passe hashé est : " + h_mdp)
 
 # Fonction pour vérifier si le mot de passe est valide
 def verif_mdp(mdp):
@@ -12,122 +35,105 @@ def verif_mdp(mdp):
             print("Le mot de passe doit contenir au moins 8 caractères")
 
         # Vérification de la présence d'au moins une lettre majuscule
-        if not any(char.isupper() for char in mdp):
+        elif not any(char.isupper() for char in mdp):
             print("Le mot de passe doit contenir au moins une lettre majuscule")
 
         # Vérification de la présence d'au moins une lettre minuscule
-        if not any(char.islower() for char in mdp):
+        elif not any(char.islower() for char in mdp):
             print("Le mot de passe doit contenir au moins une lettre minuscule")
 
         # Vérification de la présence d'au moins un chiffre
-        if not any(char.isdigit() for char in mdp):
+        elif not any(char.isdigit() for char in mdp):
             print("Le mot de passe doit contenir au moins un chiffre")
 
         # Vérification de la présence d'au moins un caractère spécial
-        if not any(char in "!@#$%^&*()-+?_=,<>/" for char in mdp):
+        elif not any(char in "!@#$%^&*()-+?_=,<>/" for char in mdp):
             print("Le mot de passe doit contenir au moins un caractère spécial")
 
         # Si toutes les conditions de sécurité sont remplies, le mot de passe est considéré comme valide
         else:
             # hasher le mot de passe
             h_mdp = hashlib.sha256(mdp.encode()).hexdigest()
-            
+
             # Lire le fichier JSON existant s'il existe
             try:
-                with open("mdp.json", "r") as fichier:
+                with open("mdp.json", "r") as fichier: #
                     try:
                         liste_h_mdp = json.load(fichier)
-                    except json.decoder.JSONDecodeError:
-                        liste_h_mdp = []
-            except FileNotFoundError:
-                liste_h_mdp = []
-                
-                with open("mdp.json", "w") as fichier:
-                    json.dump(liste_h_mdp, fichier, indent=2)
+                    except json.decoder.JSONDecodeError: # si le fichier est vide, la liste est vide 
+                        liste_h_mdp = [] # créer une liste vide
+            except FileNotFoundError: # si le fichier n'existe pas, la liste est vide
+                liste_h_mdp = [] # créer une liste vide
 
             # Ajouter le nouveau mot de passe à la liste
             liste_h_mdp.append(h_mdp)
-            
+
             # Enregistrer la liste mise à jour dans le fichier mdp.json
             with open("mdp.json", "w") as fichier:
-                json.dump(liste_h_mdp, fichier, indent=2) 
-                fichier.write("\n") 
+                json.dump(liste_h_mdp, fichier, indent=2)
+                fichier.write("\n")
 
             # message de confirmation
             print("Le mot de passe est valide")
             # Afficher le mot de passe hashé
             print("Le mot de passe hashé est : " + h_mdp)
 
-            # print("Le mot de passe a été enregistré dans le fichier mdp.json") 
-
             return True
-        
+
         # Demander à l'utilisateur de saisir un nouveau mot de passe
         mdp = input("Veuillez saisir un nouveau mot de passe : ")
 
-
+# fonction pour ajouter un mot de passe à la liste des mots de passe dans le fichier JSON
 def ajouter_mdp(mdp_list, nouveau_mdp_hash):
-    if nouveau_mdp_hash in mdp_list:
+    # Vérifier si le mot de passe est déjà présent dans la liste
+    if nouveau_mdp_hash in mdp_list: 
         print("Le mot de passe est déjà présent dans la liste.")
         return False
     else:
+        # Ajouter le mot de passe à la liste et enregistrer la liste mise à jour dans le fichier mdp.json
         mdp_list.append(nouveau_mdp_hash)
         print("Le mot de passe a été ajouté à la liste du fichier mdp.json.")
         return True
 
-def afficher_mdp(mdp_list):
+# fonction pour afficher la liste des mots de passe dans le fichier JSON 
+def afficher_mdp(mdp_list): 
     print("Liste des mots de passe enregistrés :")
-    for mdp in mdp_list:
-        print(mdp)
+    for mdp in mdp_list: # boucle pour afficher chaque mot de passe de la liste
+        print(mdp) # afficher le mot de passe
 
 # Charger la liste des mots de passe depuis le fichier JSON
-try:
-    with open("mdp.json", "r") as fichier:
-        mdp_list = json.load(fichier)
-except FileNotFoundError:
-    mdp_list = []
-
-# # Demander à l'utilisateur de saisir un mot de passe
-choix_mdp = input("Veuillez saisir votre mot de passe\n avec minimum 8 caracteres\n minimum une majuscule\n minimum une minuscule\n minimum un chiffre et un caractere special :\n")
-
-# Ajouter le nouveau mot de passe à la liste (si valide)
-
-# Appeler la fonction de vérification du mot de passe
-if verif_mdp(choix_mdp):
-    # Hacher le mot de passe
-    h_mdp = hashlib.sha256(choix_mdp.encode()).hexdigest()
-
-if ajouter_mdp(mdp_list, h_mdp):
-        # Enregistrer la liste mise à jour dans le fichier mdp.json
-        with open("mdp.json", "w") as fichier:
-            json.dump(mdp_list, fichier, indent=2) 
-            fichier.write("\n")
-    
-
-    
+try: # essayer d'ouvrir le fichier mdp.json
+    with open("mdp.json", "r") as fichier: # ouvrir le fichier mdp.json en mode lecture seule 
+        mdp_list = json.load(fichier) # charger le contenu du fichier dans la variable mdp_list 
+except FileNotFoundError: # si le fichier n'existe pas, la liste est vide 
+    mdp_list = [] # créer une liste vide
 
 # boucle while pour afficher le menu
 while True:
     try:
         # Afficher le menu
-        choix_menu = input("Choisissez une option :\n1. Ajouter un nouveau mot de passe\n2. Afficher mes mots de passe\n3. Quitter\n")
+        choix_menu = input("Choisissez une option :\n1. Ajouter un nouveau mot de passe\n2. Afficher mes mots de passe\n3. mot de passe aleatoire\n4. Quitter\n")
 
-        if choix_menu == "1":
+        if choix_menu == "1": #en appuyant sur 1, on ajoute un mot de passe
             # Appeler la fonction pour ajouter un mot de passe
             choix_mdp = input("Veuillez saisir votre mot de passe\n avec minimum 8 caracteres\n minimum une majuscule\n minimum une minuscule\n minimum un chiffre et un caractere special : ")
-                      
+
             verif_mdp(choix_mdp)
-            ajouter_mdp(mdp_list, h_mdp) 
-            
+            ajouter_mdp(mdp_list, hashlib.sha256(choix_mdp.encode()).hexdigest())
+
         elif choix_menu == "2":
             #appler la fonction pour afficher les mots de passe
             afficher_mdp(mdp_list)
         elif choix_menu == "3":
+            # Appeler la fonction pour afficher un mot de passe aléatoire
+            mdp_aleatoire()
+
+        elif choix_menu == "4":
             # Appeler la fonction pour quitter
             print("Merci d'avoir utilisé notre programme.")
             break
         else:
             print("Option invalide. Veuillez choisir une option valide.")
-    except KeyboardInterrupt:
+    except KeyboardInterrupt: # si l'utilisateur appuie sur Ctrl+C, le programme s'arrête 
         print("\nInterruption utilisateur. Programme arrêté.")
         break
