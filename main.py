@@ -20,9 +20,9 @@ def mdp_aleatoire():
     mdp_list.append(h_mdp)
 
     # enregistrer la liste mise à jour dans le fichier mdp.json 
-    with open("mdp.json", "w") as fichier:
-        json.dump(mdp_list, fichier, indent=2)
-        fichier.write("\n")
+    with open("mdp.json", "w") as fichier: # ouvrir le fichier mdp.json en mode écriture 
+        json.dump(mdp_list, fichier, indent=2) # enregistrer la liste dans le fichier mdp.json, indent=2 pour un affichage plus lisible indente mon texte dans ma liste  
+        fichier.write("\n") 
      
     print("Votre mot de passe aléatoire est : " + mdp)
     print("Le mot de passe hashé est : " + h_mdp)
@@ -35,7 +35,7 @@ def verif_mdp(mdp):
             print("Le mot de passe doit contenir au moins 8 caractères")
 
         # Vérification de la présence d'au moins une lettre majuscule
-        elif not any(char.isupper() for char in mdp):
+        elif not any(char.isupper() for char in mdp): #si aucune majuscule n'est trouvé dans le mot de passe, la condition sera True, et le bloc elif sera exécuté, affichant le message indiquant que le mot de passe doit contenir au moins un caractère spécial
             print("Le mot de passe doit contenir au moins une lettre majuscule")
 
         # Vérification de la présence d'au moins une lettre minuscule
@@ -47,7 +47,7 @@ def verif_mdp(mdp):
             print("Le mot de passe doit contenir au moins un chiffre")
 
         # Vérification de la présence d'au moins un caractère spécial
-        elif not any(char in "!@#$%^&*()-+?_=,<>/" for char in mdp):
+        elif not any(char in "!@#$%^&*()-+?_=,<>/" for char in mdp): 
             print("Le mot de passe doit contenir au moins un caractère spécial")
 
         # Si toutes les conditions de sécurité sont remplies, le mot de passe est considéré comme valide
