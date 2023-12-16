@@ -35,19 +35,19 @@ def verif_mdp(mdp):
             print("Le mot de passe doit contenir au moins 8 caractères")
 
         # Vérification de la présence d'au moins une lettre majuscule
-        elif not any(char.isupper() for char in mdp): #si aucune majuscule n'est trouvé dans le mot de passe, la condition sera True, et le bloc elif sera exécuté, affichant le message indiquant que le mot de passe doit contenir au moins un caractère spécial
+        if not any(char.isupper() for char in mdp): #si aucune majuscule n'est trouvé dans le mot de passe, la condition sera True, et le bloc elif sera exécuté, affichant le message indiquant que le mot de passe doit contenir au moins un caractère spécial
             print("Le mot de passe doit contenir au moins une lettre majuscule")
 
         # Vérification de la présence d'au moins une lettre minuscule
-        elif not any(char.islower() for char in mdp):
+        if not any(char.islower() for char in mdp):
             print("Le mot de passe doit contenir au moins une lettre minuscule")
 
         # Vérification de la présence d'au moins un chiffre
-        elif not any(char.isdigit() for char in mdp):
+        if not any(char.isdigit() for char in mdp):
             print("Le mot de passe doit contenir au moins un chiffre")
 
         # Vérification de la présence d'au moins un caractère spécial
-        elif not any(char in "!@#$%^&*()-+?_=,<>/" for char in mdp): 
+        if not any(char in "!@#$%^&*()-+?_=,<>/" for char in mdp): 
             print("Le mot de passe doit contenir au moins un caractère spécial")
 
         # Si toutes les conditions de sécurité sont remplies, le mot de passe est considéré comme valide
